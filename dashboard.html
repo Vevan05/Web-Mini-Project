@@ -11,8 +11,6 @@
         <div id="dashboardSection">
             <h1>Welcome to DoseWise</h1>
             <h2>Manage your medicine reminders easily.</h2>
-            
-            <p>Hello, <span id="username"></span>!</p>
 
             <div id="addMedicineSection">
                 <h3>Add Medicine</h3>
@@ -33,18 +31,10 @@
     </div>
 
     <script>
-        function capitaliseWords(str) {
-            return str.toLowerCase().split(' ').map(word => {
-                return word.charAt(0).toUpperCase() + word.slice(1);
-            }).join(' ');
-        }
-
         let currentUser = JSON.parse(localStorage.getItem("currentUser"));
         if (!currentUser) {
             window.location.href = "index.html"; 
-        } else {
-            document.getElementById("username").innerText = capitaliseWords(currentUser.username);
-        }
+        } 
 
         let medicines = JSON.parse(localStorage.getItem("medicines")) || [];
 
@@ -109,6 +99,19 @@
             localStorage.setItem("medicines", JSON.stringify(medicines));
             displayMedicines();
         }
+
+        function checkMedicineReminder() {
+            let now = new Date();
+            let currentTime = now.toTimeString().slice(0, 5); 
+
+            medicines.forEach(med => {
+                if (med.times.includes(currentTime)) {
+                    alert(`Time to take your medicine: ${med.name}`);
+                }
+            });
+        }
+
+        setInterval(checkMedicineReminder, 10000); 
 
         displayMedicines();
 
