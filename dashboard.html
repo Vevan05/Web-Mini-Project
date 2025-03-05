@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoseWise Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div id="dashboardSection">
+            <h1>Welcome to DoseWise</h1>
+            <h2>Manage your medicine reminders easily.</h2>
+            
+            <p>Hello, <span id="username"></span>!</p>
+
+            <div id="addMedicineSection">
+                <h3>Add Medicine</h3>
+                <input type="text" id="medicineName" placeholder="Medicine Name" required>
+                <input type="number" id="medicineFrequency" placeholder="Frequency (times per day)" min="1" required>
+                <div id="timeInputs"></div>
+                <button id="addMedicineBtn" class="dashboard-btn">Add Medicine</button>
+            </div>
+
+            <div id="medicineListSection">
+                <h3>Your Medicines</h3>
+                <p id="noMedicinesMessage" style="display: none;">You have no medicines yet.</p>
+                <ul id="medicineList"></ul>
+            </div>
+
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        function capitaliseWords(str) {
+            return str.toLowerCase().split(' ').map(word => {
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }).join(' ');
+        }
+
+        let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (!currentUser) {
+            window.location.href = "index.html"; 
+        } else {
+            document.getElementById("username").innerText = capitaliseWords(currentUser.username);
+        }
+
+        let medicines = JSON.parse(localStorage.getItem("medicines")) || [];
+
+        document.getElementById("medicineFrequency").addEventListener("input", function () {
+            let frequency = parseInt(this.value);
+            let timeInputs = document.getElementById("timeInputs");
+            timeInputs.innerHTML = "";
+
+            for (let i = 0; i < frequency; i++) {
+                let input = document.createElement("input");
+                input.type = "time";
+                input.required = true;
+                input.placeholder = `Dose ${i + 1} Time`;
+                timeInputs.appendChild(input);
+            }
+        });
+
+        document.getElementById("addMedicineBtn").addEventListener("click", function () {
+            let name = document.getElementById("medicineName").value;
+            let frequency = parseInt(document.getElementById("medicineFrequency").value);
+            let timeInputs = document.querySelectorAll("#timeInputs input");
+            let times = [];
+
+            timeInputs.forEach(input => {
+                if (input.value) {
+                    times.push(input.value);
+                }
+            });
+
+            if (name && frequency && times.length === frequency) {
+                medicines.push({ name, times });
+                localStorage.setItem("medicines", JSON.stringify(medicines));
+                displayMedicines();
+                document.getElementById("medicineName").value = "";
+                document.getElementById("medicineFrequency").value = "";
+                document.getElementById("timeInputs").innerHTML = "";
+            } else {
+                alert("Please enter medicine name, frequency, and all dose times.");
+            }
+        });
+
+        function displayMedicines() {
+            let medicineList = document.getElementById("medicineList");
+            let noMedicinesMessage = document.getElementById("noMedicinesMessage");
+            medicineList.innerHTML = "";
+            
+            if (medicines.length === 0) {
+                noMedicinesMessage.style.display = "block";
+            } else {
+                noMedicinesMessage.style.display = "none";
+                medicines.forEach((med, index) => {
+                    let li = document.createElement("li");
+                    li.innerHTML = `${med.name} at ${med.times.join(", ")} 
+                                    <button onclick="removeMedicine(${index})" class="remove-btn">Remove</button>`;
+                    medicineList.appendChild(li);
+                });
+            }
+        }
+
+        function removeMedicine(index) {
+            medicines.splice(index, 1);
+            localStorage.setItem("medicines", JSON.stringify(medicines));
+            displayMedicines();
+        }
+
+        displayMedicines();
+
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+            localStorage.removeItem("currentUser");
+            window.location.href = "index.html";
+        });
+    </script>
+</body>
+</html>
