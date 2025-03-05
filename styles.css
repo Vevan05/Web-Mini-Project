@@ -93,6 +93,10 @@ ul {
     padding: 0;
 }
 
+b{
+    cursor: pointer;
+}
+
 ul li {
     background: #EAF7F0;
     margin: 8px 0;
