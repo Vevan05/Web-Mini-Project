@@ -11,19 +11,20 @@
         <div id="dashboardSection">
             <h1>Welcome to DoseWise</h1>
             <h2>Manage your medicine reminders easily.</h2>
+            <div id="medicineSection">
+                <div id="addMedicineSection">
+                    <h3>Add Medicine</h3>
+                    <input type="text" id="medicineName" placeholder="Medicine Name" required>
+                    <input type="text" id="medicineFrequency" placeholder="Frequency (times per day)" min="1" pattern = "[0-9]+" required>
+                    <div id="timeInputs"></div>
+                    <button id="addMedicineBtn" class="dashboard-btn">Add Medicine</button>
+                </div>
 
-            <div id="addMedicineSection">
-                <h3>Add Medicine</h3>
-                <input type="text" id="medicineName" placeholder="Medicine Name" required>
-                <input type="number" id="medicineFrequency" placeholder="Frequency (times per day)" min="1" required>
-                <div id="timeInputs"></div>
-                <button id="addMedicineBtn" class="dashboard-btn">Add Medicine</button>
-            </div>
-
-            <div id="medicineListSection">
-                <h3>Your Medicines</h3>
-                <p id="noMedicinesMessage" style="display: none;">You have no medicines yet.</p>
-                <ul id="medicineList"></ul>
+                <div id="medicineListSection">
+                    <h3>Your Medicines</h3>
+                    <p id="noMedicinesMessage" style="display: none;">You have no medicines yet.</p>
+                    <ul id="medicineList"></ul>
+                </div>
             </div>
 
             <button id="logoutBtn" class="logout-btn">Logout</button>
@@ -72,7 +73,7 @@
                 document.getElementById("medicineFrequency").value = "";
                 document.getElementById("timeInputs").innerHTML = "";
             } else {
-                alert("Please enter medicine name, frequency, and all dose times.");
+                alert("Please enter your medicine details correctly ");
             }
         });
 
@@ -103,6 +104,7 @@
         function checkMedicineReminder() {
             let now = new Date();
             let currentTime = now.toTimeString().slice(0, 5); 
+            console.log(currentTime);
 
             medicines.forEach(med => {
                 if (med.times.includes(currentTime)) {
@@ -111,7 +113,7 @@
             });
         }
 
-        setInterval(checkMedicineReminder, 10000); 
+        setInterval(checkMedicineReminder, 60000); 
 
         displayMedicines();
 

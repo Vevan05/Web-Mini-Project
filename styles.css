@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+    font-family: Helvetica;
 }
 
 body {
@@ -21,7 +21,7 @@ body {
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     width: 90%;
-    max-width: 500px;
+    height: 90vh;
     text-align: center;
     overflow: hidden;
 }
@@ -125,19 +125,19 @@ ul li {
 }
 
 .logout-btn {
-    background: #E04949;
-    color: white;
+    background: #FF746C;
+    color: #FFFFFF;
     border: none;
     padding: 12px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
-    transition: 0.3s;
+    transition: 0.3s ease;
     margin-top: 20px;
 }
 
 .logout-btn:hover {
-    background: #C0392B;
+    background: #C23B22;
 }
 
 #noMedicinesMessage {
@@ -148,26 +148,29 @@ ul li {
 
 #addMedicineSection {
     background: #F3FBF6;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 0px 27px -5px, rgba(0, 0, 0, 0.3) 0px 0px 16px -8px;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
     margin-bottom: 20px;
     border-left: 5px solid #2E8B57;
-    max-height: 300px;
+    height: 55vh;
     overflow-y: auto; 
     scrollbar-width: thin;
 }
 
 #medicineListSection {
-    margin-top: 20px;
-    background: #FFFFFF;
-    padding: 20px;
+    background: #F3FBF6;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 0px 27px -5px, rgba(0, 0, 0, 0.3) 0px 0px 16px -8px;
     border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
     border-left: 5px solid #3CB371;
-    max-height: 200px;
+    height: 55vh;
     overflow-y: auto; 
     scrollbar-width: thin;
+}
+
+#medicineSection {
+    display: flex;
+    gap: 10px;
 }
