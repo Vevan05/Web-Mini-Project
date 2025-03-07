@@ -16,6 +16,7 @@
                     <h3>Add Medicine</h3>
                     <input type="text" id="medicineName" placeholder="Medicine Name" required>
                     <input type="text" id="medicineFrequency" placeholder="Frequency (times per day)" min="1" pattern = "[0-9]+" required>
+                    <input type="text" id="medicineStock" placeholder="Medicine Stock" pattern = "[0-9]+" required>
                     <div id="timeInputs"></div>
                     <button id="addMedicineBtn" class="dashboard-btn">Add Medicine</button>
                 </div>
@@ -57,6 +58,7 @@
             let name = document.getElementById("medicineName").value;
             let frequency = parseInt(document.getElementById("medicineFrequency").value);
             let timeInputs = document.querySelectorAll("#timeInputs input");
+            let stock = parseInt(document.getElementById("medicineStock").value);
             let times = [];
 
             timeInputs.forEach(input => {
@@ -65,15 +67,16 @@
                 }
             });
 
-            if (name && frequency && times.length === frequency) {
-                medicines.push({ name, times });
+            if (name && frequency && times.length === frequency && stock >= 0) {
+                medicines.push({ name, times, stock });
                 localStorage.setItem("medicines", JSON.stringify(medicines));
                 displayMedicines();
                 document.getElementById("medicineName").value = "";
                 document.getElementById("medicineFrequency").value = "";
+                document.getElementById("medicineStock").value = "";
                 document.getElementById("timeInputs").innerHTML = "";
             } else {
-                alert("Please enter your medicine details correctly ");
+                alert("Please enter your medicine details correctly");
             }
         });
 
@@ -88,7 +91,8 @@
                 noMedicinesMessage.style.display = "none";
                 medicines.forEach((med, index) => {
                     let li = document.createElement("li");
-                    li.innerHTML = `${med.name} at ${med.times.join(", ")} 
+                    li.innerHTML = `${med.name} at ${med.times.join(", ")} <br>
+                                    Stock Left: ${med.stock}
                                     <button onclick="removeMedicine(${index})" class="remove-btn">Remove</button>`;
                     medicineList.appendChild(li);
                 });
@@ -104,16 +108,36 @@
         function checkMedicineReminder() {
             let now = new Date();
             let currentTime = now.toTimeString().slice(0, 5); 
-            console.log(currentTime);
 
             medicines.forEach(med => {
                 if (med.times.includes(currentTime)) {
-                    alert(`Time to take your medicine: ${med.name}`);
+                    med.stock--; 
+                    
+                    if (med.stock == 1) {
+                        alert(`Time to take your medicine: ${med.name}. WARNING: MEDICINE STOCK LOW`);
+                    } else if (med.stock > 0) {
+                        alert(`Time to take your medicine: ${med.name}`);
+                    } else {
+                        alert(`Time to take your medicine: ${med.name}. WARNING: MEDICINE STOCK EMPTY`);
+                    }
                 }
             });
+
+            localStorage.setItem("medicines", JSON.stringify(medicines));
+            displayMedicines();
         }
 
-        setInterval(checkMedicineReminder, 60000); 
+        function startReminderCheck() {
+        let now = new Date();
+        let msToNextMinute = (60 - now.getSeconds()) * 1000; 
+
+        setTimeout(() => {
+            checkMedicineReminder(); 
+            setInterval(checkMedicineReminder, 60000);
+            }, msToNextMinute);
+        }
+
+        startReminderCheck();
 
         displayMedicines();
 
